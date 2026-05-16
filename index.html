@@ -16,7 +16,7 @@
             --text-primary: #f3f4f6;
             --text-secondary: #8a8f98;
             
-            /* Preview UI Specific Colors */
+            /* Sandbox UI colors */
             --exe-bg: #09090b;
             --exe-sidebar: #050506;
             --exe-editor: #0c0c0e;
@@ -90,7 +90,7 @@
         .hero {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 5rem 2rem 2rem 2rem;
+            padding: 5rem 2rem 3rem 2rem;
             text-align: center;
             position: relative;
         }
@@ -110,11 +110,10 @@
             z-index: 0;
         }
 
-        /* Redesigned Premier Title Banner */
         .premier-banner {
             font-size: 3.5rem;
             font-weight: 700;
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.5rem;
             letter-spacing: -1px;
             display: inline-flex;
             justify-content: center;
@@ -136,14 +135,14 @@
             color: var(--text-secondary);
             font-size: 1.15rem;
             max-width: 600px;
-            margin: 0 auto 2rem auto;
+            margin: 0 auto 2.5rem auto;
         }
 
         .cta-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
-            margin-bottom: 4rem;
+            margin-bottom: 5rem;
             z-index: 2;
             position: relative;
         }
@@ -186,7 +185,7 @@
         /* Live Sandbox Window Container */
         .preview-container {
             max-width: 850px;
-            margin: 0 auto 4rem auto;
+            margin: 0 auto 5rem auto;
             position: relative;
             z-index: 1;
         }
@@ -195,7 +194,7 @@
             background-color: var(--exe-bg);
             border: 1px solid var(--exe-border);
             border-radius: 10px;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 1px 1px rgba(255,255,255,0.03);
+            box-shadow: 0 30px 70px rgba(0,0,0,0.7);
             text-align: left;
             overflow: hidden;
             display: flex;
@@ -379,7 +378,7 @@
         .features {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 5rem 2rem;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
@@ -416,17 +415,17 @@
             font-size: 0.95rem;
         }
 
-        /* References / Credits Section */
+        /* References & Credits Section */
         .references-section {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 5rem 2rem;
             border-top: 1px solid var(--border);
         }
 
         .references-section h2 {
             font-size: 2rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
             text-align: center;
         }
 
@@ -436,15 +435,14 @@
 
         .ref-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
         }
 
         .ref-card {
             background-color: rgba(13, 13, 15, 0.5);
             border: 1px dashed var(--border);
-            padding: 1.5rem;
+            padding: 2rem;
             border-radius: 6px;
             text-decoration: none;
             color: inherit;
@@ -452,13 +450,14 @@
         }
 
         .ref-card:hover {
-            border-color: var(--text-secondary);
+            border-color: var(--accent);
             background-color: var(--bg-card);
+            transform: translateY(-2px);
         }
 
         .ref-card h4 {
             color: var(--text-primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -468,24 +467,29 @@
             content: '↗';
             color: var(--text-secondary);
             font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .ref-card:hover h4::after {
+            color: var(--accent);
         }
 
         .ref-card p {
             color: var(--text-secondary);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         /* FAQ Section */
         .faq-section {
             max-width: 800px;
             margin: 0 auto;
-            padding: 4rem 2rem;
+            padding: 5rem 2rem;
         }
 
         .faq-section h2 {
             text-align: center;
             font-size: 2.5rem;
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
         }
 
         .faq-section h2 span {
@@ -496,7 +500,7 @@
             background-color: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 6px;
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
             overflow: hidden;
         }
 
@@ -537,8 +541,8 @@
         /* Discord Invite Section */
         .discord-invite {
             max-width: 1200px;
-            margin: 4rem auto 8rem auto;
-            padding: 4rem 2rem;
+            margin: 5rem auto 8rem auto;
+            padding: 5rem 2rem;
             text-align: center;
             background: linear-gradient(180deg, var(--bg-card) 0%, rgba(5,5,5,1) 100%);
             border: 1px solid var(--border);
@@ -557,7 +561,7 @@
             gap: 0.75rem;
             font-size: 1.1rem;
             transition: all 0.2s;
-            margin-top: 1.5rem;
+            margin-top: 2rem;
         }
 
         .discord-btn:hover {
@@ -574,16 +578,101 @@
 
         footer {
             text-align: center;
-            padding: 3rem 2rem;
+            padding: 4rem 2rem;
             color: var(--text-secondary);
             font-size: 0.9rem;
             border-top: 1px solid var(--border);
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        .ai-credit {
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+
+        /* ─── CUSTOM MODAL INTERFACE FOR GIF ─── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            width: 90%;
+            max-width: 420px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .modal-close-btn:hover {
+            color: #ef4444;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         @media (max-width: 768px) {
             .premier-banner { font-size: 2.1rem; }
             .nav-links, .exe-sidebar { display: none; }
             .preview-container { padding: 0 0.5rem; }
+            .features, .references-section { padding: 3rem 1rem; }
         }
     </style>
 </head>
@@ -593,6 +682,7 @@
         <a href="#" class="logo">hydroxide<span>.live</span></a>
         <ul class="nav-links">
             <li><a href="#features">Features</a></li>
+            <li><a href="#references">References</a></li>
             <li><a href="#faq">FAQ</a></li>
             <li><a href="https://discord.gg/ccnmXncG" target="_blank">Community</a></li>
         </ul>
@@ -604,7 +694,7 @@
         </div>
         <p>Built completely in C++ for maximum speed and flawless script execution on desktop Linux environments.</p>
         <div class="cta-buttons">
-            <button class="btn btn-primary" onclick="showNotOutAlert()">Download Now</button>
+            <button class="btn btn-primary" onclick="openGifModal()">Download Now</button>
             <a href="https://discord.gg/ccnmXncG" class="btn btn-secondary" target="_blank">Join Discord</a>
         </div>
 
@@ -612,7 +702,7 @@
             <div class="exe-window">
                 <div class="exe-header">
                     <div class="exe-dots">
-                        <div class="exe-dot red"></div>
+                        <div class="exe-dot red" onclick="mockAction('clear')"></div>
                         <div class="exe-dot"></div>
                         <div class="exe-dot"></div>
                     </div>
@@ -690,7 +780,7 @@
                 <h4>Delta Executor Layout</h4>
                 <p>Inspired by the card components, dark UI styling, and aesthetic from the official Delta website setup.</p>
             </a>
-            <a href="https://github.com/SoberTeam/Sober" class="ref-card" target="_blank">
+            <a href="https://soberdocs.github.io/index.html" class="ref-card" target="_blank">
                 <h4>Sober Project</h4>
                 <p>The core runtime wrapper environment utilized for running mobile applications natively on Linux configurations.</p>
             </a>
@@ -739,12 +829,25 @@
         </a>
     </section>
 
+    <div class="modal-overlay" id="gifModal" onclick="closeGifModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="modal-title">Notice</span>
+                <button class="modal-close-btn" onclick="closeGifModal(event)">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="tenor-gif-embed" data-postid="3271342013016420505" data-share-method="host" data-aspect-ratio="0.570281" data-width="100%"><a href="https://tenor.com/view/son-son-meme-gif-3271342013016420505">Son Son Meme Meme</a>from <a href="https://tenor.com/search/son-memes">Son Memes</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2026 hydroxide.live. All rights reserved. This utility is intended for software analysis and educational evaluation.</p>
+        <p class="ai-credit">made with a little bit of ai</p>
     </footer>
 
     <script>
-        // ─── INSTANT TITLE LOOP ───
+        // Title loop logic
         const browserTitles = [
             "The Premier Linux Roblox Utility",
             "Easy & Instant Download",
@@ -765,10 +868,15 @@
             currentTitleIndex = (currentTitleIndex + 1) % browserTitles.length;
             document.title = browserTitles[currentTitleIndex];
             document.getElementById('pageMainTitle').innerHTML = pageHeaders[currentTitleIndex];
-        }, 1000);
+        }, 1200);
 
-        function showNotOutAlert() {
-            alert("YOU CANT ITS NOT OUT");
+        // Modal triggers
+        function openGifModal() {
+            document.getElementById('gifModal').classList.add('active');
+        }
+
+        function closeGifModal(event) {
+            document.getElementById('gifModal').classList.remove('active');
         }
 
         // FAQ Accordion logic
