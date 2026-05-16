@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Only Linux Executor</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #050505;
+            --bg-card: #0d0d0f;
+            --bg-card-hover: #141417;
+            --border: #1f1f24;
+            --accent: #00d4aa;
+            --accent-glow: rgba(0, 212, 170, 0.15);
+            --text-primary: #f3f4f6;
+            --text-secondary: #8a8f98;
+            
+            /* Preview UI Specific Colors */
+            --exe-bg: #09090b;
+            --exe-sidebar: #050506;
+            --exe-editor: #0c0c0e;
+            --exe-border: #18181b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        code, pre, .mono, .exe-window {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 400px;
+            background: var(--accent);
+            filter: blur(140px);
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            letter-spacing: -1px;
+            min-height: 110px; /* Prevents layout shifting when text switches */
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 4rem;
+            z-index: 2;
+            position: relative;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: #000;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #00ffcc;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-card);
+            border-color: var(--text-secondary);
+        }
+
+        /* LIVE INTERACTIVE EXECUTOR PREVIEW */
+        .preview-container {
+            max-width: 850px;
+            margin: 0 auto 4rem auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .exe-window {
+            background-color: var(--exe-bg);
+            border: 1px solid var(--exe-border);
+            border-radius: 10px;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 1px 1px rgba(255,255,255,0.03);
+            text-align: left;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 460px;
+        }
+
+        /* Window Topbar */
+        .exe-header {
+            background-color: var(--exe-sidebar);
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--exe-border);
+            user-select: none;
+        }
+
+        .exe-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .exe-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background-color: #27272a;
+        }
+        .exe-dot.red { background-color: #ef4444; }
+
+        .exe-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Window App Workspace */
+        .exe-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar UI */
+        .exe-sidebar {
+            width: 160px;
+            background-color: var(--exe-sidebar);
+            border-right: 1px solid var(--exe-border);
+            display: flex;
+            flex-direction: column;
+            padding: 0.75rem 0;
+            justify-content: space-between;
+        }
+
+        .sidebar-group p {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #4b5563;
+            padding: 0.25rem 1rem;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .sidebar-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.15s;
+        }
+
+        .sidebar-item:hover, .sidebar-item.active {
+            color: var(--accent);
+            background-color: rgba(0, 212, 170, 0.04);
+        }
+        
+        .sidebar-item.active {
+            border-left: 2px solid var(--accent);
+            padding-left: 14px;
+        }
+
+        /* Main Workspace: Editor & Lower Console Container */
+        .exe-main-stack {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            background-color: var(--exe-editor);
+        }
+
+        .exe-editor-container {
+            display: flex;
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .line-numbers {
+            color: #3f3f46;
+            text-align: right;
+            padding-right: 1rem;
+            user-select: none;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .code-display {
+            white-space: pre;
+            color: #e4e4e7;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            outline: none;
+            flex: 1;
+        }
+
+        /* Basic syntax highlighting simulation colors */
+        .keyword { color: #f43f5e; }
+        .string { color: #10b981; }
+        .function { color: #60a5fa; }
+        .comment { color: #71717a; }
+
+        /* Lower Action Console Dashboard */
+        .exe-console-bar {
+            background-color: var(--exe-sidebar);
+            border-top: 1px solid var(--exe-border);
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .exe-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .exe-btn {
+            background-color: #18181b;
+            border: 1px solid #27272a;
+            color: #d4d4d8;
+            padding: 0.35rem 0.85rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .exe-btn:hover {
+            background-color: #27272a;
+            color: #fff;
+            border-color: #3f3f46;
+        }
+
+        .exe-btn.primary-exe {
+            background-color: rgba(0, 212, 170, 0.1);
+            border-color: rgba(0, 212, 170, 0.3);
+            color: var(--accent);
+        }
+        .exe-btn.primary-exe:hover {
+            background-color: var(--accent);
+            color: #000;
+        }
+
+        /* Mini Terminal/Status bar output */
+        .exe-terminal {
+            height: 65px;
+            background-color: #050506;
+            border-top: 1px solid var(--exe-border);
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            overflow-y: auto;
+            color: #a1a1aa;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.2rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .terminal-line.info { color: #60a5fa; }
+        .terminal-line.success { color: #10b981; }
+
+        /* Features Grid */
+        .features {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 2.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            background-color: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card h3 span {
+            color: var(--accent);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .faq-section h2 span {
+            color: var(--accent);
+        }
+
+        .faq-item {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .faq-question::after {
+            content: '+';
+            color: var(--accent);
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .faq-answer p {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Discord Section */
+        .discord-invite {
+            max-width: 1200px;
+            margin: 4rem auto 8rem auto;
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(180deg, var(--bg-card) 0%, rgba(5,5,5,1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .discord-btn {
+            background-color: #5865F2;
+            color: #fff;
+            padding: 1rem 2.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            margin-top: 1.5rem;
+        }
+
+        .discord-btn:hover {
+            background-color: #4752C4;
+            box-shadow: 0 0 24px rgba(88, 101, 242, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .discord-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.3rem; min-height: 80px; }
+            .nav-links, .exe-sidebar { display: none; }
+            .preview-container { padding: 0 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">hydroxide<span>.live</span></a>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="https://discord.gg/ccnmXncG" target="_blank">Community</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <h1 id="pageMainTitle">The Only <span>Linux</span> Executor</h1>
+        <p>Experience robust execution, unmatched stability, and native performance optimized explicitly for Linux desktop environments.</p>
+        <div class="cta-buttons">
+            <button class="btn btn-primary" onclick="showNotOutAlert()">Download Now</button>
+            <a href="https://discord.gg/ccnmXncG" class="btn btn-secondary" target="_blank">Join Discord</a>
+        </div>
+
+        <div class="preview-container">
+            <div class="exe-window">
+                <div class="exe-header">
+                    <div class="exe-dots">
+                        <div class="exe-dot red"></div>
+                        <div class="exe-dot"></div>
+                        <div class="exe-dot"></div>
+                    </div>
+                    <div class="exe-title">Hydroxide Environment - v1.6.7</div>
+                    <div style="width: 45px;"></div>
+                </div>
+
+                <div class="exe-body">
+                    <div class="exe-sidebar">
+                        <div class="sidebar-group">
+                            <p>Scripts</p>
+                            <div class="sidebar-item active" onclick="loadScriptTab('aimbot')">aimbot.lua</div>
+                            <div class="sidebar-item" onclick="loadScriptTab('esp')">esp.lua</div>
+                            <div class="sidebar-item" onclick="loadScriptTab('fly')">fly_hook.lua</div>
+                        </div>
+                        <div class="sidebar-group">
+                            <p>System</p>
+                            <div class="sidebar-item">Settings</div>
+                        </div>
+                    </div>
+
+                    <div class="exe-main-stack">
+                        <div class="exe-editor-container">
+                            <div class="line-numbers">
+                                1<br>2<br>3<br>4<br>5<br>6<br>7<br>8
+                            </div>
+                            <div class="code-display" id="editorCode"><span class="comment">-- Hydroxide Engine Optimization</span>
+<span class="keyword">local</span> Target = <span class="function">loadstring</span>(game:HttpGet(<span class="string">"..."</span>))()
+<span class="keyword">if</span> Target.Enabled <span class="keyword">then</span>
+    <span class="function">print</span>(<span class="string">"Hydroxide hooked into Client network space successfully."</span>)
+    <span class="function">hooksecurefunc</span>(Workspace.CurrentCamera, <span class="string">"FieldOfView"</span>, <span class="keyword">function</span>()
+        <span class="comment">-- Custom environment override hooks</span>
+    <span class="keyword">end)</span>
+<span class="keyword">end</span></div>
+                        </div>
+
+                        <div class="exe-console-bar">
+                            <div class="exe-actions">
+                                <button class="exe-btn primary-exe" onclick="mockAction('execute')">Execute</button>
+                                <button class="exe-btn" onclick="mockAction('clear')">Clear</button>
+                            </div>
+                            <div class="exe-actions">
+                                <button class="exe-btn" onclick="mockAction('inject')">Attach Process</button>
+                            </div>
+                        </div>
+
+                        <div class="exe-terminal" id="terminalOutput">
+                            <div class="terminal-line">[info] Hydroxide systems idle. Engine environment ready for allocation.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="card">
+            UX-Specific Layout Info
+            <h3><span class="mono">[✓]</span> Native Compatibility</h3>
+            <p>Engineered cleanly to interface with Wine, Proton, and native custom environments without performance overhead.</p>
+        </div>
+        <div class="card">
+            <h3><span class="mono">[!]</span> High Security</h3>
+            <p>Designed with sophisticated structural isolation to reduce standard telemetry detection vectors drastically.</p>
+        </div>
+        <div class="card">
+            <h3><span class="mono">[%]</span> Optimised Execution</h3>
+            <p>Full support for complex, high-end environment scripts alongside custom UI hooks and seamless drawing libraries.</p>
+        </div>
+    </section>
+
+    <section class="faq-section" id="faq">
+        <h2>Frequently Asked <span>Questions</span></h2>
+        
+        <div class="faq-item">
+            <div class="faq-question">What Linux distributions are supported?</div>
+            <div class="faq-answer">
+                <p>Hydroxide supports modern x86_64 distributions, including Arch Linux, Fedora, and Ubuntu-based operating systems running optimized Wine/Proton layers.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Is Hydroxide completely safe to use?</div>
+            <div class="faq-answer">
+                <p>While Hydroxide incorporates high-level anti-telemetry protections, utilizing third-party utilities to modify memory spaces always carries an inherent risk of detection by game security layers.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">How do I install the utility?</div>
+            <div class="faq-answer">
+                <p>Simply download our build package from the dashboard, extract the binaries into your prefix/installation directories, and follow our quick-start documentation.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="discord-invite" id="discord">
+        <h2>Join the <span>Community</span></h2>
+        <p style="color: var(--text-secondary); max-width: 500px; margin: 0.5rem auto 1.5rem auto;">
+            Get instant script updates, direct technical support from developers, and connect with other users.
+        </p>
+        <a href="https://discord.gg/ccnmXncG" class="discord-btn" target="_blank">
+            <svg class="discord-icon" viewBox="0 0 127.14 96.36">
+                <path d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a74.37,74.37,0,0,0,6.72-10.93,68.6,68.6,0,0,1-10.64-5.12c.91-.67,1.81-1.37,2.67-2.1a75.22,75.22,0,0,0,72.76,0c.86.73,1.76,1.43,2.67,2.1a68.86,68.86,0,0,1-10.64,5.12,74.74,74.74,0,0,0,6.72,10.93,105.73,105.73,0,0,0,31.06-18.83C129.87,49.62,123.7,26.83,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.92,46,53.72,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.16,46,96,53,91,65.69,84.69,65.69Z"/>
+            </svg>
+            Join our Discord Server
+        </a>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 hydroxide.live. All rights reserved. This utility is intended for software analysis and educational evaluation.</p>
+    </footer>
+
+    <script>
+        // ─── INSTANT TITLE LOOP ───
+        const browserTitles = [
+            "The Only Linux Executor",
+            "Easy & Instant Download",
+            "The Best Linux Executor",
+            "Sober Supported Native Execution"
+        ];
+
+        const pageHeaders = [
+            "The Only <span>Linux</span> Executor",
+            "Easy & <span>Instant Download</span>",
+            "The Best <span>Linux</span> Executor",
+            "Sober Supported <span>Native Execution</span>"
+        ];
+
+        let currentTitleIndex = 0;
+
+        setInterval(() => {
+            currentTitleIndex = (currentTitleIndex + 1) % browserTitles.length;
+            document.title = browserTitles[currentTitleIndex];
+            document.getElementById('pageMainTitle').innerHTML = pageHeaders[currentTitleIndex];
+        }, 1000);
+
+        // Download alert trigger
+        function showNotOutAlert() {
+            alert("YOU CANT ITS NOT OUT");
+        }
+
+        // FAQ Accordion
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            const answer = item.querySelector('.faq-answer');
+
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                faqItems.forEach(i => {
+                    i.classList.remove('active');
+                    i.querySelector('.faq-answer').style.maxHeight = null;
+                });
+                if (!isActive) {
+                    item.classList.add('active');
+                    answer.style.maxHeight = answer.scrollHeight + "px";
+                }
+            });
+        });
+
+        // Mock Code Snippets
+        const codeTabs = {
+            aimbot: `<span class="comment">-- Hydroxide Engine Optimization</span>\n<span class="keyword">local</span> Target = <span class="function">loadstring</span>(game:HttpGet(<span class="string">"..."</span>))()\n<span class="keyword">if</span> Target.Enabled <span class="keyword">then</span>\n    <span class="function">print</span>(<span class="string">"Hydroxide hooked into Client network space successfully."</span>)\n    <span class="function">hooksecurefunc</span>(Workspace.CurrentCamera, <span class="string">"FieldOfView"</span>, <span class="keyword">function</span>()\n        <span class="comment">-- Custom environment override hooks</span>\n    <span class="keyword">end)</span>\n<span class="keyword">end</span>`,
+            esp: `<span class="comment">-- Render Visual Modules</span>\n<span class="keyword">local</span> CoreVisuals = <span class="function">getgenv</span>().HydroxideDrawing\n<span class="keyword">for</span> _, player <span class="keyword">in</span> <span class="function">pairs</span>(game.Players:GetPlayers()) <span class="keyword">do</span>\n    <span class="keyword">if</span> player ~= game.Players.LocalPlayer <span class="keyword">then</span>\n        CoreVisuals.CreateBox(player.Character)\n    <span class="keyword">end</span>\n<span class="keyword">end</span>`,
+            fly: `<span class="comment">-- Internal Memory Bypass Flight Struct</span>\n<span class="keyword">local</span> LP = game.Players.LocalPlayer\n<span class="keyword">local</span> Mouse = LP:GetMouse()\nMouse.KeyDown:Connect(<span class="keyword">function</span>(key)\n    <span class="keyword">if</span> key:lower() == <span class="string">"x"</span> <span class="keyword">then</span>\n        <span class="function">getgenv</span>().Flying = <span class="keyword">not</span> <span class="function">getgenv</span>().Flying\n    <span class="keyword">end</span>\n<span class="keyword">end)</span>`
+        };
+
+        function loadScriptTab(tabName) {
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('editorCode').innerHTML = codeTabs[tabName] || '';
+            logTerminal(`[info] Loaded script context cache: ${tabName}.lua`);
+        }
+
+        function logTerminal(text, type = 'info') {
+            const terminal = document.getElementById('terminalOutput');
+            const div = document.createElement('div');
+            div.className = `terminal-line ${type}`;
+            div.innerText = text;
+            terminal.appendChild(div);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function mockAction(action) {
+            if (action === 'clear') {
+                document.getElementById('editorCode').innerHTML = '';
+                logTerminal('[info] Internal environment context buffer wiped clean.');
+            } else if (action === 'inject') {
+                logTerminal('[info] Scanning memory tables for application window...', 'info');
+                setTimeout(() => {
+                    logTerminal('[success] attached successfully! IPC linked pipeline active.', 'success');
+                }, 800);
+            } else if (action === 'execute') {
+                const codeText = document.getElementById('editorCode').innerText.trim();
+                if(!codeText) {
+                    logTerminal('[info] Compilation layer empty. Input target instructions first.');
+                    return;
+                }
+                logTerminal('[info] Packaging source string bytecode payload...');
+                setTimeout(() => {
+                    logTerminal('[success] Payload executed safely into primary memory stream.', 'success');
+                }, 400);
+            }
+        }
+    </script>
+</body>
+</html>
