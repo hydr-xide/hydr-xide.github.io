@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Only Linux Executor</title>
+    <title>The Premier Linux Roblox Utility</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -110,17 +110,26 @@
             z-index: 0;
         }
 
-        .hero h1 {
+        /* Redesigned Premier Title Banner */
+        .premier-banner {
             font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 1.2rem;
             letter-spacing: -1px;
-            min-height: 110px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
 
-        .hero h1 span {
+        .premier-banner .white-text {
+            color: #ffffff;
+        }
+
+        .premier-banner .accent-text {
             color: var(--accent);
-            text-shadow: 0 0 20px var(--accent-glow);
+            text-shadow: 0 0 30px var(--accent-glow);
         }
 
         .hero p {
@@ -174,7 +183,7 @@
             border-color: var(--text-secondary);
         }
 
-        /* LIVE INTERACTIVE EXECUTOR PREVIEW */
+        /* Live Sandbox Window Container */
         .preview-container {
             max-width: 850px;
             margin: 0 auto 4rem auto;
@@ -194,7 +203,6 @@
             height: 460px;
         }
 
-        /* Window Topbar */
         .exe-header {
             background-color: var(--exe-sidebar);
             padding: 0.75rem 1rem;
@@ -224,14 +232,12 @@
             font-weight: 500;
         }
 
-        /* Window App Workspace */
         .exe-body {
             display: flex;
             flex: 1;
             overflow: hidden;
         }
 
-        /* Sidebar UI */
         .exe-sidebar {
             width: 160px;
             background-color: var(--exe-sidebar);
@@ -272,7 +278,6 @@
             padding-left: 14px;
         }
 
-        /* Main Workspace: Editor & Lower Console Container */
         .exe-main-stack {
             display: flex;
             flex-direction: column;
@@ -306,13 +311,11 @@
             flex: 1;
         }
 
-        /* Basic syntax highlighting simulation colors */
         .keyword { color: #f43f5e; }
         .string { color: #10b981; }
         .function { color: #60a5fa; }
         .comment { color: #71717a; }
 
-        /* Lower Action Console Dashboard */
         .exe-console-bar {
             background-color: var(--exe-sidebar);
             border-top: 1px solid var(--exe-border);
@@ -354,7 +357,6 @@
             color: #000;
         }
 
-        /* Mini Terminal/Status bar output */
         .exe-terminal {
             height: 65px;
             background-color: #050506;
@@ -373,7 +375,7 @@
         .terminal-line.info { color: #60a5fa; }
         .terminal-line.success { color: #10b981; }
 
-        /* Features Grid */
+        /* Features Section */
         .features {
             max-width: 1200px;
             margin: 0 auto;
@@ -414,11 +416,70 @@
             font-size: 0.95rem;
         }
 
+        /* References / Credits Section */
+        .references-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .references-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .references-section h2 span {
+            color: var(--accent);
+        }
+
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .ref-card {
+            background-color: rgba(13, 13, 15, 0.5);
+            border: 1px dashed var(--border);
+            padding: 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+        }
+
+        .ref-card:hover {
+            border-color: var(--text-secondary);
+            background-color: var(--bg-card);
+        }
+
+        .ref-card h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ref-card h4::after {
+            content: '↗';
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .ref-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
         /* FAQ Section */
         .faq-section {
             max-width: 800px;
             margin: 0 auto;
-            padding: 6rem 2rem;
+            padding: 4rem 2rem;
         }
 
         .faq-section h2 {
@@ -473,7 +534,7 @@
             font-size: 0.95rem;
         }
 
-        /* Discord Section */
+        /* Discord Invite Section */
         .discord-invite {
             max-width: 1200px;
             margin: 4rem auto 8rem auto;
@@ -482,7 +543,6 @@
             background: linear-gradient(180deg, var(--bg-card) 0%, rgba(5,5,5,1) 100%);
             border: 1px solid var(--border);
             border-radius: 12px;
-            position: relative;
         }
 
         .discord-btn {
@@ -512,7 +572,6 @@
             fill: currentColor;
         }
 
-        /* Footer */
         footer {
             text-align: center;
             padding: 3rem 2rem;
@@ -522,7 +581,7 @@
         }
 
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.3rem; min-height: 80px; }
+            .premier-banner { font-size: 2.1rem; }
             .nav-links, .exe-sidebar { display: none; }
             .preview-container { padding: 0 0.5rem; }
         }
@@ -540,7 +599,9 @@
     </nav>
 
     <section class="hero">
-        <h1 id="pageMainTitle">The Only <span>Linux</span> Executor</h1>
+        <div class="premier-banner" id="pageMainTitle">
+            <span class="white-text">The Premier</span> <span class="accent-text">Linux</span> <span class="white-text">Roblox Utility</span>
+        </div>
         <p>Built completely in C++ for maximum speed and flawless script execution on desktop Linux environments.</p>
         <div class="cta-buttons">
             <button class="btn btn-primary" onclick="showNotOutAlert()">Download Now</button>
@@ -622,6 +683,24 @@
         </div>
     </section>
 
+    <section class="references-section" id="references">
+        <h2>References & <span>Credits</span></h2>
+        <div class="ref-grid">
+            <a href="https://deltaexploits.gg" class="ref-card" target="_blank">
+                <h4>Delta Executor Layout</h4>
+                <p>Inspired by the card components, dark UI styling, and aesthetic from the official Delta website setup.</p>
+            </a>
+            <a href="https://github.com/SoberTeam/Sober" class="ref-card" target="_blank">
+                <h4>Sober Project</h4>
+                <p>The core runtime wrapper environment utilized for running mobile applications natively on Linux configurations.</p>
+            </a>
+            <a href="https://winehq.org" class="ref-card" target="_blank">
+                <h4>Wine Compatibility</h4>
+                <p>The direct backend translation subsystem layer facilitating the hooks required across target applications.</p>
+            </a>
+        </div>
+    </section>
+
     <section class="faq-section" id="faq">
         <h2>Frequently Asked <span>Questions</span></h2>
         
@@ -667,17 +746,17 @@
     <script>
         // ─── INSTANT TITLE LOOP ───
         const browserTitles = [
-            "The Only Linux Executor",
+            "The Premier Linux Roblox Utility",
             "Easy & Instant Download",
-            "The Best Linux Executor",
+            "The Best Linux Utility",
             "Sober Supported Native Execution"
         ];
 
         const pageHeaders = [
-            "The Only <span>Linux</span> Executor",
-            "Easy & <span>Instant Download</span>",
-            "The Best <span>Linux</span> Executor",
-            "Sober Supported <span>Native Execution</span>"
+            '<span class="white-text">The Premier</span> <span class="accent-text">Linux</span> <span class="white-text">Roblox Utility</span>',
+            '<span class="white-text">Easy &</span> <span class="accent-text">Instant Download</span>',
+            '<span class="white-text">The Best</span> <span class="accent-text">Linux</span> <span class="white-text">Roblox Utility</span>',
+            '<span class="white-text">Sober Supported</span> <span class="accent-text">Native Execution</span>'
         ];
 
         let currentTitleIndex = 0;
@@ -688,12 +767,11 @@
             document.getElementById('pageMainTitle').innerHTML = pageHeaders[currentTitleIndex];
         }, 1000);
 
-        // Download alert trigger
         function showNotOutAlert() {
             alert("YOU CANT ITS NOT OUT");
         }
 
-        // FAQ Accordion
+        // FAQ Accordion logic
         const faqItems = document.querySelectorAll('.faq-item');
         faqItems.forEach(item => {
             const question = item.querySelector('.faq-question');
